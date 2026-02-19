@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>GameZone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1 class="title">🎮 GameZone</h1>
+
+    <input type="text" id="playerName" placeholder="Enter your name">
+    <button onclick="saveName()">Start</button>
+
+    <div class="games">
+
+    <a href="games/snake.html" class="card">
+        <img src="images/snake.JPEG" class="thumb">
+        <h3>Snake Game</h3>
+    </a>
+
+    <a href="games/tictactoe.html" class="card">
+        <img src="images/tictactoe.png" class="thumb">
+        <h3>Tic Tac Toe</h3>
+    </a>
+
+    <a href="leaderboard.html" class="card">
+        <img src="images/leaderboard.JPEG" class="thumb">
+        <h3>Leaderboard</h3>
+    </a>
+
+</div>
+
+
+<script>
+function saveName() {
+    let name = document.getElementById("playerName").value;
+    localStorage.setItem("player", name);
+    alert("Welcome " + name + " 🎮");
+}
+</script>
+
+</body>
+</html>

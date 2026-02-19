@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Snake Game</title>
+    <style>
+        body {
+            background: black;
+            color: white;
+            text-align: center;
+            font-family: Arial;
+        }
+
+        canvas {
+            background: #111;
+            border: 4px solid white;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>🐍 Snake Game</h1>
+<h2 id="scoreText">Score: 0</h2>
+<canvas id="game" width="400" height="400"></canvas>
+<br>
+<button onclick="restartGame()">Restart</button>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+let box = 20;
+let snake = [{x: 200, y: 200}];
+let direction = "RIGHT";
+let food = {
+    x: Math.floor(Math.random() * 20) * box,
+    y: Math.floor(Math.random() * 20) * box
+};
+
+let score = 0;
+let game;
+
+// Controls
+document.addEventListener("keydown", function(event) {
+
+    if (event.key === "ArrowLeft" && direction !== "RIGHT") {
+        direction = "LEFT";
+        event.preventDefault();
+    }
+
+    else if (event.key === "ArrowUp" && direction !== "DOWN") {
+        direction = "UP";
+        event.preventDefault();
+    }
+
+    else if (event.key === "ArrowRight" && direction !== "LEFT") {
+        direction = "RIGHT";
+        event.preventDefault();
+    }
+
+    else if (event.key === "ArrowDown" && direction !== "UP") {
+        direction = "DOWN";
+        event.preventDefault();
+    }
+
+});
+
+
+function changeDirection(event) {
+    if (event.key === "ArrowLeft" && direction !== "RIGHT")
+        direction = "LEFT";
+    else if (event.key === "ArrowUp" && direction !== "DOWN")
+        direction = "UP";
+    else if (event.key === "ArrowRight" && direction !== "LEFT")
+        direction = "RIGHT";
+    else if (event.key === "ArrowDown" && direction !== "UP")
+        direction = "DOWN";
+}
+
+// Draw Game
+function draw() {
+
+    ctx.fillStyle = "#111";
+    ctx.fillRect(0, 0, 400, 400);
+
+    // Draw Snake
+    for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? "lime" : "green";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+    }
+
+    // Draw Food
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x, food.y, box, box);
+
+    let headX = snake[0].x;
+    let headY = snake[0].y;
+
+    if (direction === "LEFT") headX -= box;
+    if (direction === "UP") headY -= box;
+    if (direction === "RIGHT") headX += box;
+    if (direction === "DOWN") headY += box;
+
+    // Game Over Conditions
+    if (
+        headX < 0 || headX >= 400 ||
+        headY < 0 || headY >= 400 ||
+        collision(headX, headY, snake)
+    ) {
+        clearInterval(game);
+        saveScore();   // 🔥 Save to leaderboard
+        alert("Game Over! Your score: " + score);
+        return;
+    }
+
+    // Eat Food
+    if (headX === food.x && headY === food.y) {
+        score++;
+        document.getElementById("scoreText").innerText = "Score: " + score;
+
+        food = {
+            x: Math.floor(Math.random() * 20) * box,
+            y: Math.floor(Math.random() * 20) * box
+        };
+    } else {
+        snake.pop();
+    }
+
+    let newHead = {x: headX, y: headY};
+    snake.unshift(newHead);
+}
+
+// Collision Check
+function collision(x, y, array) {
+    for (let i = 0; i < array.length; i++) {
+        if (x === array[i].x && y === array[i].y) {
+            return true;
+        }
+    }
+    return false;
+}
+
+// Save Score to Leaderboard
+function saveScore() {
+    let player = localStorage.getItem("player") || "Guest";
+
+    let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+    leaderboard.push({
+        name: player,
+        score: score
+    });
+
+    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+}
+
+// Restart Game
+function restartGame() {
+    location.reload();
+}
+
+// Start Game
+game = setInterval(draw, 100);
+
+</script>
+
+</body>
+</html>

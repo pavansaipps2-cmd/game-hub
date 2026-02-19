@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaderboard</title>
+</head>
+<body>
+
+<h1>🏆 Leaderboard</h1>
+<div id="list"></div>
+
+<script>
+let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+leaderboard.sort((a, b) => b.score - a.score);
+
+let output = "";
+leaderboard.forEach(player => {
+    output += `<p>${player.name} - ${player.score}</p>`;
+});
+
+document.getElementById("list").innerHTML = output;
+</script>
+
+</body>
+</html>
